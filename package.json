@@ -1,0 +1,20 @@
+{
+  "name": "lt-assistant-telegram-bot",
+  "version": "0.0.1",
+  "repository": "git@github.com:max-starikevich/lt-assistant-telegram-bot.git",
+  "author": "Max Starikevich <maxim.starikevich@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "telegraf": "^3.34.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/node": "^12.12.17",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
+  },
+  "scripts": {
+    "start": "nodemon"
+  }
+}
