@@ -1,7 +1,7 @@
 {
-  "name": "lt-assistant-telegram-bot",
+  "name": "lasertag-scheduler-bot",
   "version": "0.0.1",
-  "repository": "git@github.com:max-starikevich/lt-assistant-telegram-bot.git",
+  "repository": "git@github.com:max-starikevich/lasertag-scheduler-bot.git",
   "author": "Max Starikevich <maxim.starikevich@gmail.com>",
   "license": "MIT",
   "dependencies": {
