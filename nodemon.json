@@ -1,5 +1,5 @@
 {
   "ext": "ts",
-  "exec": "ts-node ./src/server.ts",
+  "exec": "node --inspect -r ts-node/register ./src/server.ts",
   "watch": ["./src/**"]
 }
