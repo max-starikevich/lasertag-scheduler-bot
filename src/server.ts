@@ -1,4 +1,5 @@
 import Telegraf from 'telegraf'
+import { attendHandler } from './attend'
 
 if (!process.env.BOT_TOKEN) {
   throw new Error('Missing BOT_TOKEN')
@@ -6,9 +7,7 @@ if (!process.env.BOT_TOKEN) {
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
-bot.start((ctx) => ctx.reply('Welcome'))
-bot.help((ctx) => ctx.reply('Send me a sticker'))
-bot.on('sticker', (ctx) => ctx.reply('👍'))
-bot.hears('hi', (ctx) => ctx.reply('Hey there'))
+bot.start(ctx => ctx.reply('Welcome! Add me to your Lasertag chat to see what I can do!'))
+bot.hears(/^\+\d*$/, attendHandler)
 
 bot.launch()
