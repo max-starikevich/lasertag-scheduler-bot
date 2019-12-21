@@ -6,8 +6,7 @@ if (!process.env.BOT_TOKEN) { throw new Error('Missing BOT_TOKEN') }
 const bot = new Telegraf(process.env.BOT_TOKEN)
 
 prepareActions(bot)
-
-bot.launch()
+  .launch()
   .then(() => console.log('🚀 Bot has started successfully!'))
   .catch(error => {
     console.error('❌ Bot has failed to start.', error)
@@ -15,5 +14,5 @@ bot.launch()
   })
 
 process.on('unhandledRejection', (reason: any) => {
-  console.error('❌ Unhandled Rejection at:', reason || reason.stack)
+  console.error('❌ Unhandled Rejection.', reason || reason.stack)
 })
