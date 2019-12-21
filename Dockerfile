@@ -1,5 +1,5 @@
 #### TYPESCRIPT BUILDER IMAGE
-FROM node:12.13.1-alpine as ts-builder
+FROM node:12.14-alpine as ts-builder
 LABEL maintainer="maxim.starikevich@gmail.com"
 
 USER node
@@ -10,6 +10,8 @@ RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
 COPY package.json yarn.lock ./
+
+# installing "dependencies" + "devDependencies" (see NODE_ENV)
 RUN yarn install
 
 COPY tsconfig.json ./
@@ -18,7 +20,7 @@ COPY ./src ./src
 RUN tsc
 
 #### SERVER RUNTIME IMAGE
-FROM node:12.13.1-alpine as runtime
+FROM node:12.14-alpine as runtime
 LABEL maintainer="maxim.starikevich@gmail.com"
 
 USER node
@@ -29,6 +31,8 @@ RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
 COPY package.json yarn.lock ./
+
+# installing only "dependencies" (run-time packages, see NODE_ENV)
 RUN yarn install
 
 COPY --from=ts-builder /home/node/app/build build
