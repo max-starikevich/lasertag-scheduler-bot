@@ -1,5 +1,5 @@
 import Telegraf from 'telegraf'
-import { prepareActions } from '@/actions'
+import { prepareActions } from './actions'
 
 if (!process.env.BOT_TOKEN) { throw new Error('Missing BOT_TOKEN') }
 
