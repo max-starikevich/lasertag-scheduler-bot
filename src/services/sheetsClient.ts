@@ -1,58 +1,64 @@
 
 import { google } from 'googleapis'
 
-if (!process.env.SPREADSHEET_ID) { throw new Error('Missing SPREADSHEET_ID') }
-if (!process.env.SHEET_NAME) { throw new Error('Missing SHEET_NAME') }
-
 const sheets = google.sheets('v4')
-const scopes = ['https://www.googleapis.com/auth/spreadsheets']
-const spreadsheetId = process.env.SPREADSHEET_ID
-const sheetName = process.env.SHEET_NAME
 
-interface IReadSheetsParams {
-  auth: any,
-  spreadsheetId: string,
-  sheetName: string
+interface IReadSheetParams {
+  auth: any
+  spreadsheetId: string
+  range: string
 }
 
-interface IWriteSheetsParams extends IReadSheetsParams {
-  key: string,
-  value: string
+interface IChangeSheetParams extends IReadSheetParams {
+  values: string[][]
 }
 
 const getAuthToken = async () => {
+  const scopes = ['https://www.googleapis.com/auth/spreadsheets']
   const auth = new google.auth.GoogleAuth({ scopes })
   const authToken = await auth.getClient()
   return authToken
 }
 
-const getSheetsValues = ({ spreadsheetId, auth, sheetName }: IReadSheetsParams) => {
-  return sheets.spreadsheets.values.get({
-    spreadsheetId,
-    auth,
-    range: sheetName
-  })
+const getSheetsValues = async ({ spreadsheetId, auth, range }: IReadSheetParams): Promise<string[][]> => {
+  try {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId, auth, range
+    })
+    return response.data.values || [[]]
+  } catch(error) {
+    return [[]]
+  }
 }
 
-const setSheetsValue = ({ spreadsheetId, auth, sheetName, key, value }: IWriteSheetsParams) => {
-  return sheets.spreadsheets.values.update({
-    spreadsheetId,
-    auth,
-    range: `${sheetName}!${key}`,
-    requestBody: { values: [[value]] },
-    valueInputOption: 'RAW'
-  })
+const setSheetsValue = async ({ spreadsheetId, auth, range, values }: IChangeSheetParams): Promise<boolean> => {
+  try {
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      auth,
+      range,
+      valueInputOption: 'RAW',
+      requestBody: { values }
+    })
+    return true
+  } catch(error) {
+    return false
+  }
 }
 
-export const initSheetsClient = async () => {
+export const getSheetsClient = async () => {
+  const spreadsheetId = process.env.SPREADSHEET_ID as string
+  const sheetName = process.env.SHEET_NAME as string
+
   const auth = await getAuthToken()
-
-  const requestParams = { spreadsheetId, auth, sheetName }
+  const requestParams = { spreadsheetId, auth }
 
   return {
-    get: () => getSheetsValues(requestParams),
-    set: (key: string, value: string) => setSheetsValue({
-      ...requestParams, key, value
-    })
+    get: (range: string) => {
+      return getSheetsValues({ ...requestParams, range: `${sheetName}!${range}` })
+    },
+    set: (range: string, values: string[][]) => {
+      return setSheetsValue({ ...requestParams, range: `${sheetName}!${range}`, values })
+    }
   }
 }
