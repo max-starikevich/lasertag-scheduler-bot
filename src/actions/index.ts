@@ -5,7 +5,7 @@ import attendHandler from './attend'
 
 export const prepareActions = (bot: Telegraf<ContextMessageUpdate>) => {
   bot.start(startHandler)
-  bot.hears(/^\+\d*$/, attendHandler)
+  bot.hears(/^я=[0-9]*\.?[0-9]*/, attendHandler)
 
   return bot
 }
