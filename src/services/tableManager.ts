@@ -2,8 +2,8 @@ import { getSheetsClient } from '../services/sheetsClient'
 
 export const updatePlayerCount = async (
   usernameToFind: string,
-  targetCount: string,
-  personalWeaponsCount: string
+  targetCount: number,
+  personalWeaponsCount: number
 ): Promise<boolean> => {
   try {
     const sheetsClient = await getSheetsClient()
@@ -24,8 +24,8 @@ export const updatePlayerCount = async (
       return false
     }
   
-    counts[targetIndex] = targetCount
-    personalWeapons[targetIndex] = personalWeaponsCount
+    counts[targetIndex] = targetCount.toString()
+    personalWeapons[targetIndex] = personalWeaponsCount.toString()
   
     await sheetsClient.set(countRange, [counts])
     await sheetsClient.set(personalWeaponRange, [personalWeapons])
