@@ -22,29 +22,20 @@ const getAuthToken = async (): Promise<Compute | JWT | UserRefreshClient> => {
 }
 
 const getSheetsValues = async ({ spreadsheetId, auth, range }: ReadSheetParams): Promise<string[][]> => {
-  try {
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId, auth, range
-    })
-    return response.data.values || [[]]
-  } catch(error) {
-    return [[]]
-  }
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId, auth, range
+  })
+  return response.data.values || [[]]
 }
 
-const setSheetsValue = async ({ spreadsheetId, auth, range, values }: ChangeSheetParams): Promise<boolean> => {
-  try {
-    await sheets.spreadsheets.values.update({
-      spreadsheetId,
-      auth,
-      range,
-      valueInputOption: 'RAW',
-      requestBody: { values }
-    })
-    return true
-  } catch(error) {
-    return false
-  }
+const setSheetsValue = async ({ spreadsheetId, auth, range, values }: ChangeSheetParams): Promise<void> => {
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    auth,
+    range,
+    valueInputOption: 'RAW',
+    requestBody: { values }
+  })
 }
 
 export const getSheetsClient = async () => {
