@@ -13,6 +13,6 @@ prepareActions(bot)
     process.exit(1)
   })
 
-process.on('unhandledRejection', (reason: any) => {
-  console.error('❌ Unhandled Rejection.', reason || reason.stack)
+process.on('unhandledRejection', reason => {
+  console.error('❌ Unhandled Rejection.', reason)
 })

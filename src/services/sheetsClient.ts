@@ -1,26 +1,27 @@
 
 import { google } from 'googleapis'
+import { Compute, JWT, UserRefreshClient } from 'google-auth-library'
 
 const sheets = google.sheets('v4')
 
-interface IReadSheetParams {
-  auth: any
-  spreadsheetId: string
-  range: string
+interface ReadSheetParams {
+  auth: Compute | JWT | UserRefreshClient;
+  spreadsheetId: string;
+  range: string;
 }
 
-interface IChangeSheetParams extends IReadSheetParams {
-  values: string[][]
+interface ChangeSheetParams extends ReadSheetParams {
+  values: string[][];
 }
 
-const getAuthToken = async () => {
+const getAuthToken = async (): Promise<Compute | JWT | UserRefreshClient> => {
   const scopes = ['https://www.googleapis.com/auth/spreadsheets']
   const auth = new google.auth.GoogleAuth({ scopes })
   const authToken = await auth.getClient()
   return authToken
 }
 
-const getSheetsValues = async ({ spreadsheetId, auth, range }: IReadSheetParams): Promise<string[][]> => {
+const getSheetsValues = async ({ spreadsheetId, auth, range }: ReadSheetParams): Promise<string[][]> => {
   try {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId, auth, range
@@ -31,7 +32,7 @@ const getSheetsValues = async ({ spreadsheetId, auth, range }: IReadSheetParams)
   }
 }
 
-const setSheetsValue = async ({ spreadsheetId, auth, range, values }: IChangeSheetParams): Promise<boolean> => {
+const setSheetsValue = async ({ spreadsheetId, auth, range, values }: ChangeSheetParams): Promise<boolean> => {
   try {
     await sheets.spreadsheets.values.update({
       spreadsheetId,
@@ -61,4 +62,4 @@ export const getSheetsClient = async () => {
       return setSheetsValue({ ...requestParams, range: `${sheetName}!${range}`, values })
     }
   }
-}
+} 
