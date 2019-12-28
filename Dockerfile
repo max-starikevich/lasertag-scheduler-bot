@@ -9,13 +9,13 @@ ENV NODE_ENV=development
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
-COPY package.json yarn.lock ./
+COPY --chown=node:node \package.json yarn.lock ./
 
 # installing "dependencies" + "devDependencies" (see NODE_ENV)
 RUN yarn install
 
-COPY tsconfig.json ./
-COPY ./src ./src
+COPY --chown=node:node tsconfig.json ./
+COPY --chown=node:node ./src ./src
 
 RUN tsc
 
@@ -30,11 +30,11 @@ ENV NODE_ENV=production
 RUN mkdir /home/node/app
 WORKDIR /home/node/app
 
-COPY package.json yarn.lock ./
+COPY --chown=node:node package.json yarn.lock ./
 
 # installing only "dependencies" (run-time packages, see NODE_ENV)
 RUN yarn install
 
-COPY --from=ts-builder /home/node/app/build build
+COPY --chown=node:node --from=ts-builder /home/node/app/build build
 
 CMD ["node", "./build/server.js"]
