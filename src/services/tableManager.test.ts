@@ -68,7 +68,7 @@ describe('Table manager module', () => {
       const countRange = 'C5:C10'
       const personalWeaponsRange = 'D5:D10'
 
-      const username = 'test100'
+      const username = 'test100' // doesn't exist
       const playerCount = 3
       const personalWeaponsCount = 3
 
@@ -82,5 +82,7 @@ describe('Table manager module', () => {
         new ClientError(`@${username} не найден в таблице`)
       )
     })
+
+    
   })
 })

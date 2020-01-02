@@ -1,6 +1,6 @@
 import Telegraf from 'telegraf'
 
-import startHandler from './start'
+import helpHandler from './help'
 import attendHandler from './attend'
 
 export const prepareBot = () => {
@@ -10,7 +10,9 @@ export const prepareBot = () => {
 
   const bot = new Telegraf(process.env.BOT_TOKEN)
 
-  bot.start(startHandler)
+  bot.start(helpHandler)
+  bot.help(helpHandler)
+  
   bot.hears(/^я=[0-9]*\.?[0-9]*/, attendHandler)
 
   return bot
