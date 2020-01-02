@@ -1,20 +1,8 @@
 import { ContextMessageUpdate } from 'telegraf'
-import { updatePlayerCount } from '../services/tableManager'
+
 import ClientError from '../classes/ClientError'
-
-const formatResultMessage = (
-  username: string,
-  count: number, 
-  personalWeaponsCount: number
-): string => {
-  if (count === 0) {
-    return `@${username} выписан из файла записи`
-  }
-
-  const weaponInfo = (personalWeaponsCount > 0 && ` 🔫 x${personalWeaponsCount}`) || ''
-
-  return `@${username} внесен в файл записи: 💂 x${count}` + weaponInfo
-}
+import { getSheetsClient } from '../services/sheetsClient'
+import { updatePlayerCount } from '../services/tableManager'
 
 export default async (ctx: ContextMessageUpdate): Promise<void> => {
   try {
@@ -30,11 +18,30 @@ export default async (ctx: ContextMessageUpdate): Promise<void> => {
       throw new ClientError('Не удалось прочитать команду')
     }
 
-    const [count = 0, personalWeaponsCount = 0] = input.split('.').map(value => +value || 0)
+    const [playerCount = 0, personalWeaponsCount = 0] = input.split('.').map(value => +value || 0)
 
-    await updatePlayerCount(username, count, personalWeaponsCount)
+    const sheetsClient = await getSheetsClient();
 
-    const resultMessage = formatResultMessage(username, count, personalWeaponsCount)
+    const countRange = process.env.COUNT_RANGE as string
+    const usernameRange = process.env.USERNAME_RANGE as string
+    const personalWeaponsRange = process.env.PERSONAL_WEAPONS_RANGE as string
+
+    await updatePlayerCount({ 
+      countRange, usernameRange, personalWeaponsRange,
+      sheetsClient, username, playerCount, personalWeaponsCount
+    })
+
+    const formatResultMessage = () => {
+      if (playerCount === 0) {
+        return `@${username} выписан из файла записи`
+      }
+    
+      const personalWeaponInfo = (personalWeaponsCount > 0 && ` 🔫 x${personalWeaponsCount}`) || ''
+    
+      return `@${username} внесен в файл записи: 💂 x${playerCount}` + personalWeaponInfo
+    }
+
+    const resultMessage = formatResultMessage()
     await ctx.reply(resultMessage)
 
   } catch(error) {
