@@ -14,6 +14,7 @@ interface ChangeSheetParams extends ReadSheetParams {
   values: string[][];
 }
 
+
 const getAuthToken = async (): Promise<Compute | JWT | UserRefreshClient> => {
   const scopes = ['https://www.googleapis.com/auth/spreadsheets']
   const auth = new google.auth.GoogleAuth({ scopes })
@@ -38,14 +39,31 @@ const setSheetsValue = async ({ spreadsheetId, auth, range, values }: ChangeShee
   })
 }
 
-export const getSheetsClient = async () => {
+export interface SheetsClient {
+  get: (range: string) => Promise<string[][]>;
+  set: (range: string, values: string[][]) => Promise<void>;
+}
+
+interface Memo {
+  instance: SheetsClient | null;
+}
+
+const memo: Memo = {
+  instance: null
+}
+
+export const getSheetsClient = async (): Promise<SheetsClient> => {
+  if (memo.instance !== null) {
+    return memo.instance;
+  }
+
   const spreadsheetId = process.env.SPREADSHEET_ID as string
   const sheetName = process.env.SHEET_NAME as string
 
   const auth = await getAuthToken()
   const requestParams = { spreadsheetId, auth }
 
-  return {
+  const instance: SheetsClient = {
     get: (range: string) => {
       return getSheetsValues({ ...requestParams, range: `${sheetName}!${range}` })
     },
@@ -53,4 +71,8 @@ export const getSheetsClient = async () => {
       return setSheetsValue({ ...requestParams, range: `${sheetName}!${range}`, values })
     }
   }
+
+  memo.instance = instance;
+
+  return memo.instance;
 } 

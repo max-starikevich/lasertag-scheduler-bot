@@ -1,11 +1,6 @@
-import Telegraf from 'telegraf'
-import { prepareActions } from './actions'
+import { prepareBot } from './actions'
 
-if (!process.env.BOT_TOKEN) { throw new Error('Missing BOT_TOKEN') }
-
-const bot = new Telegraf(process.env.BOT_TOKEN)
-
-prepareActions(bot)
+prepareBot()
   .launch()
   .then(() => console.log('🚀 Bot has started successfully!'))
   .catch(error => {

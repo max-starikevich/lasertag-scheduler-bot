@@ -8,6 +8,6 @@
         "processId": "${command:PickProcess}",
         "restart": true,
         "protocol": "inspector",
-    },
+    }
   ]
 }
