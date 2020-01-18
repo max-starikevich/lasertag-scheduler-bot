@@ -2,18 +2,24 @@
 import { google } from 'googleapis'
 import { Compute, JWT, UserRefreshClient } from 'google-auth-library'
 
-const sheets = google.sheets('v4')
+const { spreadsheets } = google.sheets('v4')
 
 interface ReadSheetParams {
   auth: Compute | JWT | UserRefreshClient;
   spreadsheetId: string;
-  range: string;
+  ranges: string[];
 }
 
-interface ChangeSheetParams extends ReadSheetParams {
-  values: string[][];
+interface ChangeSheetParams {
+  auth: Compute | JWT | UserRefreshClient;
+  spreadsheetId: string;
+  data: ValueRange[];
 }
 
+export interface ValueRange {
+  range?: string | null;
+  values?: any[][] | null;
+}
 
 const getAuthToken = async (): Promise<Compute | JWT | UserRefreshClient> => {
   const scopes = ['https://www.googleapis.com/auth/spreadsheets']
@@ -22,26 +28,24 @@ const getAuthToken = async (): Promise<Compute | JWT | UserRefreshClient> => {
   return authToken
 }
 
-const getSheetsValues = async ({ spreadsheetId, auth, range }: ReadSheetParams): Promise<string[][]> => {
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId, auth, range
+const getSheetsValues = async ({ spreadsheetId, auth, ranges }: ReadSheetParams): Promise<ValueRange[]> => {
+  const response = await spreadsheets.values.batchGet({
+    spreadsheetId, ranges, auth
   })
-  return response.data.values || [[]]
+  return response.data.valueRanges || []
 }
 
-const setSheetsValue = async ({ spreadsheetId, auth, range, values }: ChangeSheetParams): Promise<void> => {
-  await sheets.spreadsheets.values.update({
-    spreadsheetId,
-    auth,
-    range,
-    valueInputOption: 'RAW',
-    requestBody: { values }
+const setSheetsValue = async ({ spreadsheetId, auth, data }: ChangeSheetParams): Promise<void> => {
+  await spreadsheets.values.batchUpdate({
+    spreadsheetId, auth, requestBody: {
+      data, valueInputOption: 'RAW'
+    }
   })
 }
 
 export interface SheetsClient {
-  get: (range: string) => Promise<string[][]>;
-  set: (range: string, values: string[][]) => Promise<void>;
+  get: (ranges: string[]) => Promise<ValueRange[]>;
+  set: (valueRanges: ValueRange[]) => Promise<void>;
 }
 
 interface Memo {
@@ -64,11 +68,17 @@ export const getSheetsClient = async (): Promise<SheetsClient> => {
   const requestParams = { spreadsheetId, auth }
 
   const instance: SheetsClient = {
-    get: (range: string) => {
-      return getSheetsValues({ ...requestParams, range: `${sheetName}!${range}` })
+    get: (ranges: string[]) => {
+      return getSheetsValues({
+        ...requestParams,
+        ranges: ranges.map(range => `${sheetName}!${range}`)
+      })
     },
-    set: (range: string, values: string[][]) => {
-      return setSheetsValue({ ...requestParams, range: `${sheetName}!${range}`, values })
+    set: async (valueRanges) => {
+      return setSheetsValue({
+        ...requestParams,
+        data: valueRanges
+      })
     }
   }
 

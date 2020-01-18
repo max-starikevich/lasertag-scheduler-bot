@@ -51,6 +51,6 @@ export default async (ctx: ContextMessageUpdate): Promise<void> => {
     }
 
     console.error(error)
-    await ctx.reply(`❌ Что-то пошло не так...`)
+    await ctx.reply(`😞 Неизвестная ошибка`)
   }
 }
