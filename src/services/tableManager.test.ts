@@ -1,26 +1,32 @@
 import { updatePlayerCount } from './tableManager'
-import { SheetsClient } from './sheetsClient'
+import { SheetsClient, ValueRange } from './sheetsClient'
 import ClientError from '../classes/ClientError'
 
 const getSheetsClient = async () => {
-  const tableData: { [key: string]: string[][] } = {
-    'B5:B10': [
-      ['test1', 'test2', 'test3', 'test4', 'test5']
-    ],
-    'C5:C10': [
-      ['2', '', '', '1', '']
-    ],
-    'D5:D10': [
-      ['2', '', '', '0', '']
-    ]
+  const tableData: { [key: string]: ValueRange } = {
+    'B5:B10': {
+      range: 'B5:B10',
+      values: [['test1'], ['test2'], ['test3'], ['test4'], ['test5']]
+    },
+    'C5:C10': {
+      range: 'C5:C10',
+      values: [['2'], [''], [''], ['1'], ['']]
+    },
+    'D5:D10': {
+      range: 'D5:D10',
+      values: [['2'], [''], [''], ['0'], ['']]
+    }
   }
 
   const sheetsClient: SheetsClient = {
-    get: async (range) => {
-      return tableData[range] || [['', '', '', '', '']]
+    get: async (ranges) => {
+      return ranges.map(range => tableData[range] || null)
     },
-    set: async (range, values) => {
-      tableData[range] = values
+    set: async (data) => {
+      data.map(({ range, values }) => {
+        if (!range) { return }
+        tableData[range] = { range, values }
+      })
     }
   }
 
@@ -46,17 +52,22 @@ describe('Table manager module', () => {
         username, playerCount, personalWeaponsCount
       })
 
-      const expectedRanges = [
-        [['test1', 'test2', 'test3', 'test4', 'test5']],
-        [['2', '3', '', '1', '']],
-        [['2', '3', '', '0', '']]
+      const expectedRanges: ValueRange[] = [
+        {
+          range: 'B5:B10',
+          values: [['test1'], ['test2'], ['test3'], ['test4'], ['test5']]
+        },
+        {
+          range: 'C5:C10',
+          values: [['2'], ['3'], [''], ['1'], ['']]
+        },
+        {
+          range: 'D5:D10',
+          values: [['2'], ['3'], [''], ['0'], ['']]
+        }
       ]
 
-      const resultRanges = await Promise.all([
-        sheetsClient.get(usernameRange),
-        sheetsClient.get(countRange),
-        sheetsClient.get(personalWeaponsRange)
-      ])
+      const resultRanges = await sheetsClient.get([ usernameRange, countRange, personalWeaponsRange ])
 
       expect(resultRanges).toEqual(expectedRanges)
     })
@@ -78,11 +89,9 @@ describe('Table manager module', () => {
         username, playerCount, personalWeaponsCount
       })
 
-      await expect(updatePromise).rejects.toEqual(
-        new ClientError(`@${username} не найден в таблице`)
-      )
-    })
+      const expectedError = new ClientError(`@${username} не найден в таблице`)
 
-    
+      await expect(updatePromise).rejects.toEqual(expectedError)
+    })
   })
 })

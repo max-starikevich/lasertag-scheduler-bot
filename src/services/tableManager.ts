@@ -1,4 +1,4 @@
-import { SheetsClient } from '../services/sheetsClient'
+import { SheetsClient, ValueRange } from '../services/sheetsClient'
 import ClientError from '../classes/ClientError'
 
 interface UpdateParams {
@@ -16,22 +16,34 @@ export const updatePlayerCount = async ({
   sheetsClient, username, playerCount, personalWeaponsCount
 }: UpdateParams): Promise<void> => {
   const [
-    [countColumn], [usernameColumn], [personalWeaponsColumn]
-  ] = await Promise.all([
-    sheetsClient.get(countRange),
-    sheetsClient.get(usernameRange),
-    sheetsClient.get(personalWeaponsRange),
-  ])
+    countData, usernameData, personalWeaponsData
+  ] = await sheetsClient.get([countRange, usernameRange, personalWeaponsRange])
 
-  const targetIndex = usernameColumn.findIndex(usernameElement => usernameElement === username)
+  if (!usernameData || !usernameData.values || !usernameData.values.length) {
+    throw new ClientError(`Не удалось найти список пользователей в ${usernameRange}`)
+  }
+
+  const targetIndex = usernameData.values.findIndex(value => value[0] === username)
 
   if (targetIndex === -1) {
     throw new ClientError(`@${username} не найден в таблице`)
   }
 
-  countColumn[targetIndex] = playerCount.toString()
-  personalWeaponsColumn[targetIndex] = personalWeaponsCount.toString()
+  const updatedCountData: ValueRange = {
+    ...countData,
+    values: usernameData.values.map((_, index) => {
+      if (index === targetIndex) return [playerCount.toString()]
+      return (countData && countData.values && countData.values[index]) || ['']
+    })
+  }
 
-  await sheetsClient.set(countRange, [countColumn])
-  await sheetsClient.set(personalWeaponsRange, [personalWeaponsColumn])
+  const updatedPersonalWeaponsData: ValueRange = {
+    ...personalWeaponsData,
+    values: usernameData.values.map((_, index) => {
+      if (index === targetIndex) return [personalWeaponsCount.toString()]
+      return (personalWeaponsData && personalWeaponsData.values && personalWeaponsData.values[index]) || ['']
+    })
+  }
+
+  await sheetsClient.set([updatedCountData, updatedPersonalWeaponsData])
 }
