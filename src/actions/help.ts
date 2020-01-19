@@ -1,4 +1,5 @@
 import { ContextMessageUpdate } from 'telegraf'
+import { handleActionError } from '../errors'
 
 export default async (ctx: ContextMessageUpdate): Promise<void> => {
   try {
@@ -10,6 +11,6 @@ export default async (ctx: ContextMessageUpdate): Promise<void> => {
 
     await ctx.replyWithMarkdown(helpMessage)
   } catch(error) {
-    console.error(error)
+    handleActionError(error)
   }
 }

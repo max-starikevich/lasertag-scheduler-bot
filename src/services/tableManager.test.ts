@@ -10,11 +10,11 @@ const getSheetsClient = async () => {
     },
     'C5:C10': {
       range: 'C5:C10',
-      values: [['2'], [''], [''], ['1'], ['']]
+      values: [['2'], [''], [''], ['1']]
     },
     'D5:D10': {
       range: 'D5:D10',
-      values: [['2'], [''], [''], ['0'], ['']]
+      values: [['2']]
     }
   }
 
@@ -63,7 +63,7 @@ describe('Table manager module', () => {
         },
         {
           range: 'D5:D10',
-          values: [['2'], ['3'], [''], ['0'], ['']]
+          values: [['2'], ['3'], [''], [''], ['']]
         }
       ]
 

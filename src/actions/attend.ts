@@ -3,6 +3,7 @@ import { ContextMessageUpdate } from 'telegraf'
 import ClientError from '../classes/ClientError'
 import { getSheetsClient } from '../services/sheetsClient'
 import { updatePlayerCount } from '../services/tableManager'
+import { handleActionError } from '../errors'
 
 export default async (ctx: ContextMessageUpdate): Promise<void> => {
   try {
@@ -46,11 +47,12 @@ export default async (ctx: ContextMessageUpdate): Promise<void> => {
 
   } catch(error) {
     if (error instanceof ClientError) {
-      await ctx.reply(`❌ ${error.message}`)
+      ctx.reply(`❌ ${error.message}`).catch(error => handleActionError(error))
       return
     }
+    
+    handleActionError(error)
 
-    console.error(error)
-    await ctx.reply(`😞 Неизвестная ошибка`)
+    ctx.reply(`😞 Неизвестная ошибка`).catch(error => handleActionError(error))
   }
 }
