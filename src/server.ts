@@ -1,16 +1,12 @@
 import { prepareBot } from './actions'
 import { checkEnvironment } from './environment'
+import { handleStartupError, handleUnexpectedRejection } from './errors'
 
 checkEnvironment()
   .then(prepareBot)
   .then(bot => bot.launch())
   .then(() => console.log('🚀 Bot has started successfully!'))
-  .catch(error => {
-    console.error('❌ Bot has failed to start.', error.message)
-    process.exit(1)
-  })
+  .catch(handleStartupError)
   
-process.on('unhandledRejection', reason => {
-  console.error('❌ Unhandled Rejection.', reason)
-})
+process.on('unhandledRejection', handleUnexpectedRejection)
   
