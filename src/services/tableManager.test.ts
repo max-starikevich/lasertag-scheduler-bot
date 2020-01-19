@@ -1,6 +1,6 @@
 import { updatePlayerCount } from './tableManager'
 import { SheetsClient, ValueRange } from './sheetsClient'
-import ClientError from '../classes/ClientError'
+import ClientError from '../errors'
 
 const getSheetsClient = async () => {
   const tableData: { [key: string]: ValueRange } = {

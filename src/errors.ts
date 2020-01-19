@@ -10,3 +10,5 @@ export const handleStartupError = (error: Error) => {
 export const handleUnexpectedRejection = (error: any) => {
   console.error('❌ Unexpected rejection.', error)
 }
+
+export default class ClientError extends Error {}
