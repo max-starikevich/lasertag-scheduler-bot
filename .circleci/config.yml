@@ -48,8 +48,8 @@ jobs:
       - run: yarn test
 
       - slack/status:
-          failure_message: "Deployment to `${CIRCLE_BRANCH}` has been failed."
-          success_message: "Deployment to `${CIRCLE_BRANCH}` has been successful."
+          failure_message: "Deployment to ${CIRCLE_BRANCH} has been failed."
+          success_message: "Deployment to ${CIRCLE_BRANCH} has been successful."
 
 workflows:
   lint-and-test:
