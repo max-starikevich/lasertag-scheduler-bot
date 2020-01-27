@@ -47,6 +47,8 @@ jobs:
 
       - run: yarn test
 
+      - run: exit 1
+
       - slack/status:
           failure_message: "Deployment to ${CIRCLE_BRANCH} has been failed."
           success_message: "Deployment to ${CIRCLE_BRANCH} has been successful."
