@@ -48,7 +48,7 @@ jobs:
       - run: yarn test
 
       - slack/notify:
-          message: Unit tests are okay!
+          message: "Custom message from CircleCI. Branch: ${CIRCLE_BRANCH}"
 
 workflows:
   lint-and-test:
