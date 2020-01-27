@@ -1,4 +1,6 @@
 version: 2
+orbs:
+  slack: circleci/slack@3.4.2
 
 jobs:
   lint:
@@ -44,6 +46,9 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       - run: yarn test
+
+      - slack/notify:
+          message: Tests are okay!
 
 workflows:
   version: 2
