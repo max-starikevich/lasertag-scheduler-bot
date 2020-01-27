@@ -5,7 +5,7 @@ orbs:
 jobs:
   lint:
     docker:
-      - image: node:12.14-alpine
+      - image: node:12.14
 
     working_directory: ~/repo
 
@@ -27,7 +27,7 @@ jobs:
 
   unit-test:
     docker:
-      - image: node:12.14-alpine
+      - image: node:12.14
 
     working_directory: ~/repo
 
@@ -48,7 +48,7 @@ jobs:
       - run: yarn test
 
       - slack/notify:
-          message: Tests are okay!
+          message: Unit tests are okay!
 
 workflows:
   lint-and-test:
