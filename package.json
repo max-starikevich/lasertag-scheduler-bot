@@ -26,5 +26,6 @@
     "start": "nodemon",
     "lint": "eslint './src/**/*.ts'",
     "test": "jest"
-  }
+  },
+  "test1": "test1"
 }
