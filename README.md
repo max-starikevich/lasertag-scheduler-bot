@@ -1,8 +1,6 @@
-# Assistant bot for Lasertag scheduling
+# Telegram bot for our local Lasertag community
 
-Just a little helper to make scheduling of the games and attending people easier.
-
-It should monitor messages in a group chat and make necessary changes, for example, in the Google Sheets.
+Meant to automate some daily functions, like add yourself to the playerlist (Google Spreadsheets).
 
 # Quick start
 

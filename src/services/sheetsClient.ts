@@ -48,41 +48,21 @@ export interface SheetsClient {
   set: (valueRanges: ValueRange[]) => Promise<void>;
 }
 
-interface Memo {
-  instance: SheetsClient | null;
-}
-
-const memo: Memo = {
-  instance: null
-}
-
 export const getSheetsClient = async (): Promise<SheetsClient> => {
-  if (memo.instance !== null) {
-    return memo.instance;
-  }
-
   const spreadsheetId = process.env.SPREADSHEET_ID as string
   const sheetName = process.env.SHEET_NAME as string
 
   const auth = await getAuthToken()
   const requestParams = { spreadsheetId, auth }
 
-  const instance: SheetsClient = {
-    get: (ranges: string[]) => {
-      return getSheetsValues({
-        ...requestParams,
-        ranges: ranges.map(range => `${sheetName}!${range}`)
-      })
-    },
-    set: async (valueRanges) => {
-      return setSheetsValue({
-        ...requestParams,
-        data: valueRanges
-      })
-    }
+  return {
+    get: ranges => getSheetsValues({
+      ...requestParams,
+      ranges: ranges.map(range => `${sheetName}!${range}`)
+    }),
+    set: async valueRanges => setSheetsValue({
+      ...requestParams,
+      data: valueRanges
+    })
   }
-
-  memo.instance = instance;
-
-  return memo.instance;
 } 

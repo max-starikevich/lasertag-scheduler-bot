@@ -1,5 +1,5 @@
 import { SheetsClient, ValueRange } from '../services/sheetsClient'
-import ClientError from '../classes/ClientError'
+import ClientError from '../errors'
 
 interface UpdateParams {
   sheetsClient: SheetsClient;
