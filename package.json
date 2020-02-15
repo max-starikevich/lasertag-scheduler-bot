@@ -1,10 +1,11 @@
 {
   "name": "lasertag-scheduler-bot",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "repository": "git@github.com:max-starikevich/lasertag-scheduler-bot.git",
   "author": "Max Starikevich <maxim.starikevich@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@sentry/node": "5.12.2",
     "googleapis": "^46.0.0",
     "telegraf": "^3.34.1"
   },
