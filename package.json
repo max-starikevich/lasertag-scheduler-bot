@@ -5,6 +5,7 @@
   "author": "Max Starikevich <maxim.starikevich@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "@sentry/node": "5.12.2",
     "googleapis": "^46.0.0",
     "telegraf": "^3.34.1"
   },
