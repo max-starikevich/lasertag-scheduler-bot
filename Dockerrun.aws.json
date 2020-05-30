@@ -1,7 +1,0 @@
-{
-  "AWSEBDockerrunVersion": "1",
-  "Image": {
-    "Name": "maxstarikevich/lasertag-scheduler-bot:0.1.0",
-    "Update": "true"
-  }
-}
