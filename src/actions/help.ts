@@ -1,5 +1,5 @@
-import { ContextMessageUpdate } from 'telegraf'
-import { handleActionError } from '../errors'
+import { ContextMessageUpdate } from 'telegraf';
+import { handleActionError } from '../errors';
 
 export default async (ctx: ContextMessageUpdate): Promise<void> => {
   try {
@@ -11,8 +11,8 @@ export default async (ctx: ContextMessageUpdate): Promise<void> => {
       *я=0*   - выпишет вас из файла (поставит 0 0)
     `;
 
-    await ctx.replyWithMarkdown(helpMessage)
-  } catch(error) {
-    handleActionError(error)
+    await ctx.replyWithMarkdown(helpMessage);
+  } catch (error) {
+    handleActionError(error);
   }
-}
+};
