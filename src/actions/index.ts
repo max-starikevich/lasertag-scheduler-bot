@@ -1,15 +1,15 @@
-import Telegraf from 'telegraf'
+import Telegraf from 'telegraf';
 
-import helpHandler from './help'
-import attendHandler from './attend'
+import helpHandler from './help';
+import attendHandler from './attend';
 
 export const prepareBot = async () => {
-  const bot = new Telegraf(process.env.BOT_TOKEN as string)
+  const bot = new Telegraf(process.env.BOT_TOKEN as string);
 
-  bot.start(helpHandler)
-  bot.help(helpHandler)
-  
-  bot.hears(/^я=[0-9]*\.?[0-9]*/, attendHandler)
+  bot.start(helpHandler);
+  bot.help(helpHandler);
 
-  return bot
-}
+  bot.hears(/^я=[0-9]*\.?[0-9]*/, attendHandler);
+
+  return bot;
+};
