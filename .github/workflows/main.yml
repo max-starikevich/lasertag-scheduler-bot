@@ -5,19 +5,26 @@ on:
     types: [created]
 
 jobs:
-  comment:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Add comment to PR
+      - name: Checkout source code
         if: contains(github.event.comment.body, '🚀')
-        env:
-          URL: ${{ github.event.issue.comments_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl \
-            -X POST \
-            $URL \
-            -H "Content-Type: application/json" \
-            -H "Authorization: token $GITHUB_TOKEN" \
-            --data '{ "body": "Rocket received" }'
+        uses: actions/checkout@v1
+
+      - name: Build the code
+        run: yarn build
+
+      - name: Generate deployment package
+        run: zip deploy.zip build/*
+
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v10
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: MyApplicationName
+          environment_name: MyApplication-Environment
+          version_label: 12345
+          region: eu-central-1
+          deployment_package: deploy.zip
