@@ -1,4 +1,4 @@
-name: Some workflow
+name: Deploy to EB from PR comment
 
 on:
   issue_comment:
