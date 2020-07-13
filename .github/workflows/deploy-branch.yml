@@ -16,7 +16,5 @@ jobs:
           git config --global user.name 'Deployment'
           git config --global user.email 'deployment@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          git checkout -b max/test-deploy-to-node-1
-          git add .
-          git commit -m "Automated report"
-          git push -u origin max/test-deploy-to-node-1
+          git checkout -b ${GITHUB_REF##*/}-deploy-to-node-1
+          git push -u origin ${GITHUB_REF##*/}-deploy-to-node-1
