@@ -23,7 +23,7 @@ jobs:
           git checkout -b max/test-deploy-to-node-1
           git add .
           git commit -m "Automated report"
-          git push
+          git push -u origin max/test-deploy-to-node-1
 
       - name: Add comment to PR
         if: contains(github.event.comment.body, '🚀')
