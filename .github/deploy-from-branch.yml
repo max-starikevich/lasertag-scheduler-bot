@@ -1,0 +1,38 @@
+name: Push deployment branch to CircleCI
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Create report file
+        if: contains(github.event.comment.body, '🚀')
+        run: date +%s > report.txt
+
+      - name: Commit report
+        if: contains(github.event.comment.body, '🚀')
+        run: |
+          git config --global user.name 'Deployment'
+          git config --global user.email 'deployment@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+          git checkout -b max/test-deploy-to-node-1
+          git commit -am "Automated report"
+          git push
+
+      - name: Add comment to PR
+        if: contains(github.event.comment.body, '🚀')
+        env:
+          URL: ${{ github.event.issue.comments_url }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl \	
+            -X POST \	
+            $URL \	
+            -H "Content-Type: application/json" \	
+            -H "Authorization: token $GITHUB_TOKEN" \	
+            --data '{ "body": "Rocket received. Deployment has started." }'
