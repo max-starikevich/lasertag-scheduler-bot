@@ -1,4 +1,4 @@
-name: Push deployment branch to CircleCI
+name: Deploy the branch to AWS by PR comment
 
 on:
   issue_comment:
@@ -10,12 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - name: Create report file
-        if: contains(github.event.comment.body, '🚀')
-        run: date +%s > report.txt
-
-      - name: Commit report
-        if: contains(github.event.comment.body, '🚀')
+      - name: Create a new deployment branch and push it
+        if: contains(github.event.comment.body, 'node1 🚀')
         run: |
           git config --global user.name 'Deployment'
           git config --global user.email 'deployment@users.noreply.github.com'
@@ -24,16 +20,3 @@ jobs:
           git add .
           git commit -m "Automated report"
           git push -u origin max/test-deploy-to-node-1
-
-      - name: Add comment to PR
-        if: contains(github.event.comment.body, '🚀')
-        env:
-          URL: ${{ github.event.issue.comments_url }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          curl \	
-            -X POST \	
-            $URL \	
-            -H "Content-Type: application/json" \	
-            -H "Authorization: token $GITHUB_TOKEN" \	
-            --data '{ "body": "Rocket received. Deployment has started." }'
