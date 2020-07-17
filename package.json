@@ -27,6 +27,7 @@
   "scripts": {
     "start": "nodemon",
     "lint": "eslint './src/**/*.ts'",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   }
 }
