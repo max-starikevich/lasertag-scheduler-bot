@@ -1,4 +1,4 @@
-import { ContextMessageUpdate } from 'telegraf';
+import { Context } from 'telegraf';
 
 import ClientError from '../errors';
 
@@ -6,7 +6,7 @@ import { getSheetsClient } from '../services/sheetsClient';
 import { updatePlayerCount } from '../services/tableManager';
 import { handleActionError } from '../errors';
 
-export default async (ctx: ContextMessageUpdate): Promise<void> => {
+export default async (ctx: Context): Promise<void> => {
   try {
     const username: string = ctx.from?.username || '';
 

@@ -1,7 +1,7 @@
-import { ContextMessageUpdate } from 'telegraf';
+import { Context } from 'telegraf';
 import { handleActionError } from '../errors';
 
-export default async (ctx: ContextMessageUpdate): Promise<void> => {
+export default async (ctx: Context): Promise<void> => {
   try {
     const helpMessage = `
       Чтобы записаться в файл используйте один из двух форматов:
