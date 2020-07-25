@@ -1,6 +1,6 @@
 import { updatePlayerCount } from './tableManager';
-import { SheetsClient, ValueRange } from './sheetsClient';
-import ClientError from '../errors';
+import { SheetsClient, ValueRange } from '../types';
+import { ClientError } from '../errors';
 
 const getSheetsClient = async () => {
   const tableData: { [key: string]: ValueRange } = {
@@ -42,20 +42,20 @@ describe('Table manager module', () => {
 
       const usernameRange = 'B5:B10';
       const countRange = 'C5:C10';
-      const personalWeaponsRange = 'D5:D10';
+      const weaponsRange = 'D5:D10';
 
       const username = 'test2';
       const playerCount = 3;
-      const personalWeaponsCount = 3;
+      const weaponsCount = 3;
 
       await updatePlayerCount({
         sheetsClient,
         usernameRange,
         countRange,
-        personalWeaponsRange,
+        weaponsRange,
         username,
         playerCount,
-        personalWeaponsCount
+        weaponsCount
       });
 
       const expectedRanges: ValueRange[] = [
@@ -76,7 +76,7 @@ describe('Table manager module', () => {
       const resultRanges = await sheetsClient.get([
         usernameRange,
         countRange,
-        personalWeaponsRange
+        weaponsRange
       ]);
 
       expect(resultRanges).toEqual(expectedRanges);
@@ -87,20 +87,20 @@ describe('Table manager module', () => {
 
       const usernameRange = 'B5:B10';
       const countRange = 'C5:C10';
-      const personalWeaponsRange = 'D5:D10';
+      const weaponsRange = 'D5:D10';
 
       const username = 'test100'; // doesn't exist
       const playerCount = 3;
-      const personalWeaponsCount = 3;
+      const weaponsCount = 3;
 
       const updatePromise = updatePlayerCount({
         sheetsClient,
         usernameRange,
         countRange,
-        personalWeaponsRange,
+        weaponsRange,
         username,
         playerCount,
-        personalWeaponsCount
+        weaponsCount
       });
 
       const expectedError = new ClientError(`@${username} не найден в таблице`);
