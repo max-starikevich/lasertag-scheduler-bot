@@ -30,8 +30,7 @@ const requiredVariables: EnvironmentToCheck = {
   },
 
   COUNT_RANGE: async () => validateRange(process.env.COUNT_RANGE),
-  PERSONAL_WEAPONS_RANGE: async () =>
-    validateRange(process.env.PERSONAL_WEAPONS_RANGE),
+  WEAPONS_RANGE: async () => validateRange(process.env.WEAPONS_RANGE),
   USERNAME_RANGE: async () => validateRange(process.env.USERNAME_RANGE),
 
   SENTRY_DSN: async () => {

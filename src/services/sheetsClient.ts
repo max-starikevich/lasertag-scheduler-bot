@@ -1,6 +1,8 @@
 import { google } from 'googleapis';
 import { Compute, JWT, UserRefreshClient } from 'google-auth-library';
 
+import { ValueRange, SheetsClient } from '../types';
+
 const { spreadsheets } = google.sheets('v4');
 
 interface ReadSheetParams {
@@ -13,11 +15,6 @@ interface ChangeSheetParams {
   auth: Compute | JWT | UserRefreshClient;
   spreadsheetId: string;
   data: ValueRange[];
-}
-
-export interface ValueRange {
-  range?: string | null;
-  values?: any[][] | null;
 }
 
 const getAuthToken = async (): Promise<Compute | JWT | UserRefreshClient> => {
@@ -54,11 +51,6 @@ const setSheetsValue = async ({
     }
   });
 };
-
-export interface SheetsClient {
-  get: (ranges: string[]) => Promise<ValueRange[]>;
-  set: (valueRanges: ValueRange[]) => Promise<void>;
-}
 
 export const getSheetsClient = async (): Promise<SheetsClient> => {
   const spreadsheetId = process.env.SPREADSHEET_ID as string;

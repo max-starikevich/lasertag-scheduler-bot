@@ -1,30 +1,30 @@
-import { SheetsClient, ValueRange } from '../services/sheetsClient';
-import ClientError from '../errors';
+import { SheetsClient, ValueRange } from '../types';
+import { ClientError } from '../errors';
 
 interface UpdateParams {
   sheetsClient: SheetsClient;
   username: string;
   playerCount: number;
-  personalWeaponsCount: number;
+  weaponsCount: number;
   countRange: string;
   usernameRange: string;
-  personalWeaponsRange: string;
+  weaponsRange: string;
 }
 
 export const updatePlayerCount = async ({
   countRange,
   usernameRange,
-  personalWeaponsRange,
+  weaponsRange,
   sheetsClient,
   username,
   playerCount,
-  personalWeaponsCount
+  weaponsCount
 }: UpdateParams): Promise<void> => {
-  const [
-    countData,
-    usernameData,
-    personalWeaponsData
-  ] = await sheetsClient.get([countRange, usernameRange, personalWeaponsRange]);
+  const [countData, usernameData, weaponsData] = await sheetsClient.get([
+    countRange,
+    usernameRange,
+    weaponsRange
+  ]);
 
   if (!usernameData || !usernameData.values || !usernameData.values.length) {
     throw new ClientError(
@@ -48,17 +48,15 @@ export const updatePlayerCount = async ({
     })
   };
 
-  const updatedPersonalWeaponsData: ValueRange = {
-    ...personalWeaponsData,
+  const updatedWeaponsData: ValueRange = {
+    ...weaponsData,
     values: usernameData.values.map((_, index) => {
-      if (index === targetIndex) return [personalWeaponsCount.toString()];
+      if (index === targetIndex) return [weaponsCount.toString()];
       return (
-        (personalWeaponsData &&
-          personalWeaponsData.values &&
-          personalWeaponsData.values[index]) || ['']
+        (weaponsData && weaponsData.values && weaponsData.values[index]) || ['']
       );
     })
   };
 
-  await sheetsClient.set([updatedCountData, updatedPersonalWeaponsData]);
+  await sheetsClient.set([updatedCountData, updatedWeaponsData]);
 };
